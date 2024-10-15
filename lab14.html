@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Book</title>
+    <link rel="stylesheet" href="style2.css">
+</head>
+<body>
+    <div class="container">
+        <h1> Phone Book</h1>
+        <div class="profile-section">
+            <div class="profile" id="profile">
+                <div class="notify"><p>1</p></div>
+            </div>
+        </div>
+        <div class="username-section">
+            <label>Set the Username</label>
+            <input type="text" id="name" placeholder="Enter Username">
+            <button onclick="setName()">SET</button>
+        </div>
+        <div class="image-section">
+            <label>Set the profile image URL</label>
+            <input type="text" id="image-url" placeholder="Enter Image URL">
+            <button onclick="changeProfile()">SET</button>
+        </div>
+
+        <h2>Phone Number List</h2>
+        <div class="phone-section">
+            <input type="text" id="phone-name" placeholder="Name">
+            <input type="text" id="phone-number" placeholder="Tel">
+            <button onclick="addPhoneNumber()">ADD</button>
+            <button onclick="saveCSV()">EXPORT</button>
+        </div>
+
+        <table id="phone-table">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Name</th>
+                    <th>Phone Number</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let phoneNumbers = [];
+
+        function setName() {
+            const username = document.getElementById("name").value;
+            if (username) {
+                document.querySelector('h1').textContent = username + "'s Phone Book";
+            }
+        }
+
+        function changeProfile() {
+            const imageUrl = document.getElementById('image-url').value;
+            if (imageUrl) {
+                document.getElementById('profile').style.backgroundImage = 'url(' + imageUrl + ')';
+            }
+        }
+
+        function addPhoneNumber() {
+            const name = document.getElementById('phone-name').value;
+            const number = document.getElementById('phone-number').value;
+
+            if (name && number) {
+                phoneNumbers.push([name, number]);
+
+                const tableBody = document.querySelector('#phone-table tbody');
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${phoneNumbers.length}</td>
+                    <td>${name}</td>
+                    <td>${number}</td>
+                `;
+                tableBody.appendChild(row);
+
+                document.getElementById('phone-name').value = '';
+                document.getElementById('phone-number').value = '';
+            }
+        }
+
+        function saveCSV() {
+            const csvContent = phoneNumbers.map(row => row.join(",")).join("\n");
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "phone_book.csv");
+            link.style.visibility = "hidden";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
